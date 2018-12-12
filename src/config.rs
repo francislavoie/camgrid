@@ -1,12 +1,15 @@
 extern crate serde_derive;
 extern crate toml;
 
-use std::fs::File;
 use std::io::prelude::*;
+use std::{
+    fs::File,
+    path::{Path, PathBuf},
+};
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
-    paths: Option<Vec<String>>,
+    paths: Option<Vec<PathBuf>>,
 }
 
 impl Config {
@@ -18,7 +21,7 @@ impl Config {
     }
 
     /// Loads the config from file at given path, or creates a default config
-    pub fn load(path: &str) -> Config {
+    pub fn load<P: AsRef<Path>>(path: P) -> Config {
         // Load the file, or create a default Config if no file
         let mut file = match File::open(path) {
             Ok(f) => f,
@@ -41,7 +44,7 @@ impl Config {
     }
 
     /// Serializes the config and stores it to file at given path
-    pub fn save(&self, path: &str) {
+    pub fn save<P: AsRef<Path>>(&self, path: P) {
         let toml = toml::to_string(self).unwrap();
 
         let mut file = File::create(path).unwrap();
@@ -49,13 +52,13 @@ impl Config {
     }
 
     /// Adds a new directory path to the paths config
-    pub fn add_path(&mut self, path: &str) {
+    pub fn add_path<P: AsRef<Path>>(&mut self, path: P) {
         if let Some(ref mut v) = self.paths {
-            v.push(String::from(path));
+            v.push(path.as_ref().to_owned())
         }
     }
 
-    pub fn paths(&self) -> &Option<Vec<String>> {
+    pub fn paths(&self) -> &Option<Vec<PathBuf>> {
         &self.paths
     }
 }

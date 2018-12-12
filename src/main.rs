@@ -10,11 +10,11 @@ mod eventloop;
 mod watcher;
 mod window;
 
-fn main() {
-    const CONFIG_PATH: &str = "Camgrid.toml";
-    const WIDTH: f64 = 1200.0;
-    const HEIGHT: f64 = 800.0;
+const CONFIG_PATH: &str = "Camgrid.toml";
+const WIDTH: f64 = 1200.0;
+const HEIGHT: f64 = 800.0;
 
+fn main() {
     // Load our config from file if possible, else init new config
     let config = config::Config::load(CONFIG_PATH);
 
@@ -52,7 +52,7 @@ fn main() {
 
         for event in event_loop.next(&mut window.get_events_loop()) {
             // Use the `winit` backend feature to convert the winit event to a conrod one.
-            if let Some(_) = window.convert_event(&event) {
+            if window.convert_event(&event).is_some() {
                 event_loop.needs_update();
             }
 
