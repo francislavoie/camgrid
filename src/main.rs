@@ -30,10 +30,8 @@ fn main() {
 
     // Watch the configured paths. All files and directories
     // at that path and below will be monitored for changes.
-    if let Some(paths) = config.paths() {
-        for path in paths {
-            watcher.watch(path);
-        }
+    for path in config.paths() {
+        watcher.watch(path);
     }
 
     // Build the window

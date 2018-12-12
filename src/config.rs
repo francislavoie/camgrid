@@ -9,15 +9,14 @@ use std::{
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
-    paths: Option<Vec<PathBuf>>,
+    #[serde(default)]
+    paths: Vec<PathBuf>,
 }
 
 impl Config {
     /// Creates a new empty config
     fn new() -> Config {
-        Config {
-            paths: Some(vec![]),
-        }
+        Config { paths: vec![] }
     }
 
     /// Loads the config from file at given path, or creates a default config
@@ -33,14 +32,7 @@ impl Config {
         file.read_to_string(&mut contents).unwrap();
 
         // Deserialize the file as TOML into our Config struct
-        let mut config: Config = toml::from_str(contents.as_ref()).unwrap();
-
-        // Ensure we have an empty vec if loaded file had none
-        if config.paths.is_none() {
-            config.paths.replace(vec![]);
-        }
-
-        config
+        toml::from_str(contents.as_ref()).unwrap()
     }
 
     /// Serializes the config and stores it to file at given path
@@ -53,12 +45,10 @@ impl Config {
 
     /// Adds a new directory path to the paths config
     pub fn add_path<P: AsRef<Path>>(&mut self, path: P) {
-        if let Some(ref mut v) = self.paths {
-            v.push(path.as_ref().to_owned())
-        }
+        self.paths.push(path.as_ref().to_owned())
     }
 
-    pub fn paths(&self) -> &Option<Vec<PathBuf>> {
+    pub fn paths(&self) -> &[PathBuf] {
         &self.paths
     }
 }
