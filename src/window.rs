@@ -75,17 +75,16 @@ impl Window {
         &mut self.events_loop
     }
 
-    pub fn convert_event(&mut self, event: &glutin::Event) -> Option<Input> {
+    pub fn convert_event(&mut self, event: glutin::Event) -> bool {
         // Use the `winit` backend feature to convert the winit event to a conrod one.
-        let input = conrod::backend::winit::convert_event(event.clone(), &self.display);
+        let input = conrod::backend::winit::convert_event(event, &self.display);
 
-        if input.is_some() {
-            let event = input.unwrap().clone();
-            self.ui.handle_event(event.clone());
-            return Some(event);
+        if let Some(i) = input {
+            self.ui.handle_event(i);
+            return true;
         }
 
-        input
+        false
     }
 
     pub fn should_quit(&self, event: &Event) -> bool {

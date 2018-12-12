@@ -1,4 +1,4 @@
-use conrod::backend::glium::glium::{self, glutin};
+use conrod::backend::glium::glium::glutin::{self, ControlFlow};
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -34,12 +34,12 @@ impl EventLoop {
         if events.is_empty() && !self.ui_needs_update {
             events_loop.run_forever(|event| {
                 events.push(event);
-                glium::glutin::ControlFlow::Break
+                ControlFlow::Break
             });
         }
 
         self.ui_needs_update = false;
-        self.last_update = std::time::Instant::now();
+        self.last_update = Instant::now();
 
         events
     }

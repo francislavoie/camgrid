@@ -50,7 +50,7 @@ fn main() {
 
         for event in event_loop.next(&mut window.get_events_loop()) {
             // Use the `winit` backend feature to convert the winit event to a conrod one.
-            if window.convert_event(&event).is_some() {
+            if window.convert_event(event.clone()) {
                 event_loop.needs_update();
             }
 
