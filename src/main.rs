@@ -43,17 +43,14 @@ fn main() {
         // Handle FS events
         watcher.recv();
 
-        let mut events = Vec::new();
-        window
-            .get_events_loop()
-            .poll_events(|event| events.push(event));
-
+        // Handle every window event
         for event in event_loop.next(&mut window.get_events_loop()) {
             // Use the `winit` backend feature to convert the winit event to a conrod one.
             if window.convert_event(event.clone()) {
                 event_loop.needs_update();
             }
 
+            // If any of the events say we should quit the program, we'll do so
             if window.should_quit(&event) {
                 break 'main;
             }
