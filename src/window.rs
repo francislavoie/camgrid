@@ -7,7 +7,6 @@ use conrod::{
         },
         Renderer,
     },
-    event::Input,
     image::Map,
     widget, Colorable, Positionable, Widget,
 };
