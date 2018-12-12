@@ -1,4 +1,5 @@
 use notify::{raw_watcher, RawEvent, RecommendedWatcher, RecursiveMode, Watcher};
+use std::path::Path;
 use std::sync::mpsc::TryRecvError::Empty;
 use std::sync::mpsc::{channel, Receiver};
 
@@ -19,12 +20,14 @@ impl Watch {
         }
     }
 
-    pub fn watch(&mut self, path: &String) {
-        self.watcher.watch(path, RecursiveMode::Recursive).unwrap();
+    pub fn watch<P: AsRef<Path>>(&mut self, path: P) {
+        self.watcher
+            .watch(path.as_ref(), RecursiveMode::Recursive)
+            .unwrap();
     }
 
-    pub fn unwatch(&mut self, path: &String) {
-        self.watcher.unwatch(path).unwrap();
+    pub fn unwatch<P: AsRef<Path>>(&mut self, path: P) {
+        self.watcher.unwatch(path.as_ref()).unwrap();
     }
 
     pub fn recv(&self) -> Option<RawEvent> {

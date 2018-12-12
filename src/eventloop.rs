@@ -1,32 +1,29 @@
-use conrod::backend::glium::glium;
-use std::thread::sleep;
+use conrod::backend::glium::glium::{self, glutin};
+use std::thread;
 use std::time::{Duration, Instant};
 
 pub struct EventLoop {
     ui_needs_update: bool,
-    last_update: std::time::Instant,
+    last_update: Instant,
 }
 
 impl EventLoop {
     pub fn new() -> Self {
         EventLoop {
-            last_update: std::time::Instant::now(),
+            last_update: Instant::now(),
             ui_needs_update: true,
         }
     }
 
     /// Produce an iterator yielding all available events.
-    pub fn next(
-        &mut self,
-        events_loop: &mut glium::glutin::EventsLoop,
-    ) -> Vec<glium::glutin::Event> {
+    pub fn next(&mut self, events_loop: &mut glutin::EventsLoop) -> Vec<glutin::Event> {
         // We don't want to loop any faster than 60 FPS, so wait until it has been at least 16ms
         // since the last yield.
         let last_update = self.last_update;
         let sixteen_ms = Duration::from_millis(16);
         let duration_since_last_update = Instant::now().duration_since(last_update);
         if duration_since_last_update < sixteen_ms {
-            sleep(sixteen_ms - duration_since_last_update);
+            thread::sleep(sixteen_ms - duration_since_last_update);
         }
 
         // Collect all pending events.
